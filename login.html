@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harvest Hub Login</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+background:linear-gradient(135deg,#dfeee0,#c8e6c9);
+display:flex;
+justify-content:center;
+padding-top:80px;
+}
+
+.wrapper{
+width:420px;
+position:relative;
+}
+
+.top-bg{
+height:180px;
+background:linear-gradient(135deg,#2e7d32,#1b5e20);
+width:460px;
+margin-left:-20px;
+border-top-left-radius:45px;
+border-top-right-radius:45px;
+}
+
+.login-card{
+position:relative;
+top:-90px;
+background:#f5f5f5;
+border-radius:35px;
+box-shadow:0 20px 40px rgba(0,0,0,0.2);
+padding:45px 35px;
+text-align:center;
+}
+
+.login-card h1{
+color:#2e7d32;
+margin-bottom:6px;
+}
+
+.subtitle{
+color:#777;
+margin-bottom:30px;
+}
+
+input{
+width:100%;
+padding:15px;
+margin-bottom:18px;
+border:none;
+border-radius:14px;
+background:#eaeaea;
+font-size:15px;
+}
+
+button{
+width:100%;
+padding:16px;
+border:none;
+border-radius:35px;
+background:#2e7d32;
+color:white;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+}
+
+button:hover{
+background:#1b5e20;
+}
+
+.signup{
+margin-top:18px;
+font-size:14px;
+}
+
+.signup a{
+color:#2e7d32;
+font-weight:bold;
+text-decoration:none;
+}
+
+</style>
+</head>
+
+<body>
+<div class="wrapper">
+<div class="top-bg"></div>
+<div class="login-card">
+<h1>🌾 Welcome to Harvest Hub</h1>
+<p class="subtitle">
+Buy fresh farm products directly from farmers
+</p>
+
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password *" required>
+
+<p id="passError" style="color:red;font-size:13px;display:none;">
+Invalid password format
+</p>
+<button onclick="login()">Login</button>
+
+<div class="signup">
+Don't have an account?
+<a href="register.html">Sign up</a>
+</div>
+</div>
+</div>
+
+<script>
+async function login(){
+const email=document.getElementById("email").value;
+const password=document.getElementById("password").value;
+
+const pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{6,}$/;
+
+if(!pattern.test(password)){
+document.getElementById("passError").style.display = "block";
+return;
+}else{
+document.getElementById("passError").style.display = "none";
+}
+
+try{
+const res=await fetch("http://localhost:5000/login",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({email,password})
+});
+
+const data=await res.json();
+console.log("LOGIN RESPONSE:",data);
+if(data.token){
+localStorage.setItem("token",data.token);
+const payload = JSON.parse(atob(data.token.split('.')[1]));
+
+if(payload.role==="farmer"){
+window.location="farmer.html";
+}
+else if(payload.role==="customer"){
+window.location="customer.html";
+}
+else{
+window.location="admin.html";
+}
+}else{
+
+alert(data);
+}
+}catch(err){
+
+console.error("Login error:",err);
+alert("Server connection error");
+}
+}
+</script>
+
+</body>
+</html>

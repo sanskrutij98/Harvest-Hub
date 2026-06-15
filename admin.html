@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Harvest Hub Admin</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+display:flex;
+background:linear-gradient(135deg,#e8f5e9,#c8e6c9);
+min-height:100vh;
+}
+/* SIDEBAR */
+.sidebar{
+width:240px;
+background:linear-gradient(180deg,#2e7d32,#1b5e20);
+color:white;
+padding:25px;
+display:flex;
+flex-direction:column;
+box-shadow:5px 0 20px rgba(0,0,0,0.2);
+}
+
+.sidebar h2{
+margin-bottom:40px;
+}
+
+.sidebar a{
+display:flex;
+align-items:center;
+gap:10px;
+color:white;
+text-decoration:none;
+padding:12px;
+margin-bottom:10px;
+border-radius:10px;
+transition:0.2s;
+}
+
+.sidebar a:hover{
+background:rgba(255,255,255,0.2);
+}
+/* MAIN AREA */
+.main{
+flex:1;
+padding:40px;
+}
+/* TOPBAR */
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
+}
+
+.topbar-right{
+display:flex;
+align-items:center;
+gap:15px;
+}
+
+.notification{
+position:relative;
+}
+
+.bell{
+position:relative;
+background:white;
+padding:10px;
+border-radius:50%;
+cursor:pointer;
+font-size:18px;
+}
+
+#notifyCount{
+position:absolute;
+top:-5px;
+right:-5px;
+background:red;
+color:white;
+font-size:11px;
+padding:2px 6px;
+border-radius:50%;
+}
+
+.notification-box{
+position:absolute;
+top:45px;
+right:0;
+width:260px;
+background:white;
+border-radius:10px;
+box-shadow:0 10px 20px rgba(0,0,0,0.2);
+display:none;
+padding:15px;
+z-index:100;
+}
+
+.notification-box h4{
+margin-bottom:10px;
+color:#2e7d32;
+}
+
+.note{
+padding:8px;
+border-bottom:1px solid #eee;
+font-size:14px;
+}
+/* STATS */
+.stats{
+display:grid;
+grid-template-columns:repeat(3, 1fr);
+gap:25px;
+}
+
+@media (max-width:768px){
+.stats{
+grid-template-columns:repeat(2,1fr);
+}
+}
+
+@media (max-width:480px){
+.stats{
+grid-template-columns:1fr;
+}
+}
+
+.stat{
+padding:25px;
+border-radius:15px;
+color:white;
+box-shadow:0 10px 25px rgba(0,0,0,0.2);
+transition:0.3s;
+}
+
+.stat:hover{
+transform:translateY(-5px);
+}
+
+.stat h2{
+font-size:32px;
+margin-bottom:5px;
+}
+/* CARD COLORS */
+.usersCard{background:#43a047;}
+.farmersCard{background:#66bb6a;}
+.customersCard{background:#81c784;}
+.productsCard{background:#2e7d32;}
+.ordersCard{background:#1b5e20;}
+.revenueCard{background:#388e3c;}
+/* CHART */
+.chart{
+background:white;
+padding:25px;
+border-radius:15px;
+box-shadow:0 5px 20px rgba(0,0,0,0.1);
+margin-bottom:30px;
+}
+/* USERS TABLE */
+.users{
+background:white;
+padding:25px;
+border-radius:15px;
+box-shadow:0 5px 20px rgba(0,0,0,0.1);
+}
+
+.users h3{
+margin-bottom:15px;
+color:#2e7d32;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th,td{
+padding:12px;
+border-bottom:1px solid #eee;
+}
+
+th{
+color:#2e7d32;
+}
+
+tr:hover{
+background:#f4f7f4;
+}
+
+.logout{
+background:#e53935;
+color:white;
+border:none;
+padding:10px 18px;
+border-radius:20px;
+cursor:pointer;
+font-weight:bold;
+transition:0.2s;
+}
+
+.logout:hover{
+background:#c62828;
+transform:scale(1.05);
+}
+/* DELETE BUTTON */
+.delete{
+background:#e53935;
+color:white;
+border:none;
+padding:6px 12px;
+border-radius:8px;
+cursor:pointer;
+}
+</style>
+
+</head>
+<body>
+<!-- SIDEBAR -->
+<div class="sidebar">
+<h2>🌾 Harvest Hub</h2>
+<a href="#">📊 Dashboard</a> <a href="#">👥 Users</a> <a href="#">📦 Products</a> <a href="#">🛒 Orders</a> <a href="#">🔔 Notifications</a>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+<div class="topbar">
+<h1>Admin Dashboard</h1>
+<div class="topbar-right">
+
+<!-- Notification -->
+<div class="notification">
+<div class="bell" onclick="toggleNotifications()">
+🔔
+<span id="notifyCount">0</span>
+</div>
+<div class="notification-box" id="notificationBox">
+<h4>Notifications</h4>
+<div id="notificationList"></div>
+</div>
+</div>
+
+<button class="logout" onclick="logout()">Logout</button>
+</div>
+</div>  
+
+<!-- STATS -->
+<div class="stats">
+<div class="stat usersCard">
+<h2 id="users">0</h2>
+<p>Total Users</p>
+</div>
+
+<div class="stat farmersCard">
+<h2 id="farmers">0</h2>
+<p>Farmers</p>
+</div>
+
+<div class="stat customersCard">
+<h2 id="customers">0</h2>
+<p>Customers</p>
+</div>
+
+<div class="stat productsCard">
+<h2 id="products">0</h2>
+<p>Products</p>
+</div>
+
+<div class="stat ordersCard">
+<h2 id="orders">0</h2>
+<p>Orders</p>
+</div>
+
+<div class="stat revenueCard">
+<h2 id="revenue">₹0</h2>
+<p>Total Revenue</p>
+</div>
+</div>
+
+<!-- CHART -->
+<div class="chart">
+<h3 style="margin-bottom:10px;color:#2e7d32;">Platform Analytics</h3>
+<canvas id="statsChart"></canvas>
+</div>
+
+<!-- USERS -->
+<div class="users">
+<h3>Users</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Email</th>
+<th>Role</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody id="usersTable"></tbody>
+</table>
+</div>
+</div>
+
+<script>
+const API="http://localhost:5000";
+
+function getToken(){
+return localStorage.getItem("token");
+}
+
+/* LOAD STATS */
+async function loadStats(){
+const res=await fetch(API+"/admin/stats",{
+headers:{
+Authorization:"Bearer "+getToken()
+}
+});
+
+const stats=await res.json();
+
+document.getElementById("users").innerText=stats.totalUsers;
+document.getElementById("farmers").innerText=stats.totalFarmers;
+document.getElementById("customers").innerText=stats.totalCustomers;
+document.getElementById("products").innerText=stats.totalProducts;
+document.getElementById("orders").innerText=stats.totalOrders;
+document.getElementById("revenue").innerText="₹"+stats.totalRevenue;
+
+/* CHART */
+new Chart(document.getElementById("statsChart"),{
+type:"bar",
+data:{
+labels:["Users","Farmers","Customers","Products","Orders"],
+datasets:[{
+label:"Platform Data",
+data:[
+stats.totalUsers,
+stats.totalFarmers,
+stats.totalCustomers,
+stats.totalProducts,
+stats.totalOrders
+],
+backgroundColor:"#2e7d32"
+}]
+}
+});
+}
+
+/* LOAD USERS */
+async function loadUsers(){
+const res=await fetch(API+"/admin/users",{
+headers:{
+Authorization:"Bearer "+getToken()
+}
+});
+
+const users=await res.json();
+const table=document.getElementById("usersTable");
+table.innerHTML="";
+users.forEach(u=>{
+table.innerHTML+=`
+<tr>
+
+<td>${u.name}</td>
+<td>${u.email}</td>
+<td>${u.role}</td>
+
+<td>
+<button class="delete" onclick="deleteUser('${u._id}')">
+Delete
+</button>
+</td>
+</tr>
+`;
+});
+}
+
+/* DELETE USER */
+async function deleteUser(id){
+await fetch(API+"/admin/delete-user/"+id,{
+method:"DELETE",
+headers:{
+Authorization:"Bearer "+getToken()
+}
+});
+loadUsers();
+}
+
+/* LOGOUT */
+function logout(){
+localStorage.removeItem("token");
+window.location="login.html";
+}
+function toggleNotifications(){
+const box=document.getElementById("notificationBox");
+box.style.display =
+box.style.display==="block" ? "none" : "block";
+loadNotifications();
+}
+
+async function loadNotifications(){
+const res=await fetch("http://localhost:5000/notifications",{
+headers:{
+Authorization:"Bearer "+localStorage.getItem("token")
+}
+});
+const notes=await res.json();
+const list=document.getElementById("notificationList");
+document.getElementById("notifyCount").innerText=notes.length;
+list.innerHTML="";
+notes.forEach(n=>{
+list.innerHTML+=`
+<div class="note">
+${n.message}
+</div>
+`;
+});
+}
+loadStats();
+loadUsers();
+loadNotifications();
+</script>
+
+</body>
+</html>

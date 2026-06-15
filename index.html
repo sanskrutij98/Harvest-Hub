@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harvest Hub</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+/* BODY */
+body{
+background:linear-gradient(135deg,#e8f5e9,#c8e6c9);
+color:#333;
+}
+/* NAVBAR */
+nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 60px;
+background:rgba(255,255,255,0.8);
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+nav h2{
+color:#2e7d32;
+}
+
+nav a{
+margin-left:20px;
+text-decoration:none;
+font-weight:bold;
+color:#2e7d32;
+}
+
+.hero{
+display:flex;
+align-items:center;
+justify-content:center;   
+gap:60px;                
+padding:50px 60px;
+flex-wrap:wrap;
+text-align:left;
+}
+
+.hero-text{
+max-width:500px;
+margin:0 auto;  
+}
+
+.hero-text h1{
+font-size:40px;
+color:#2e7d32;
+margin-bottom:15px;
+}
+
+.hero-text p{
+font-size:18px;
+margin-bottom:25px;
+}
+
+/* BUTTONS */
+.buttons a{
+padding:12px 25px;
+border-radius:30px;
+text-decoration:none;
+margin-right:10px;
+font-weight:bold;
+}
+
+.login{
+background:#2e7d32;
+color:white;
+}
+
+.login:hover{
+background:#1b5e20;
+}
+
+.register{
+background:white;
+border:2px solid #2e7d32;
+color:#2e7d32;
+}
+
+.register:hover{
+background:#2e7d32;
+color:white;
+}
+
+.hero img{
+width:350px;
+max-width:100%;
+border-radius:15px;
+display:block;
+margin:0 auto;   /* ✅ centers image */
+}
+
+.features{
+padding:40px 60px 60px;
+text-align:center;
+}
+
+.features h2{
+color:#2e7d32;
+margin-bottom:25px;
+}
+
+.feature-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:25px;
+}
+
+.feature{
+background:white;
+padding:25px;
+border-radius:20px;
+box-shadow:0 10px 25px rgba(0,0,0,0.1);
+transition:0.3s;
+}
+
+.feature:hover{
+transform:translateY(-5px);
+}
+
+.feature span{
+font-size:40px;
+display:block;
+margin-bottom:10px;
+}
+
+.cta{
+background:#2e7d32;
+color:white;
+text-align:center;
+padding:50px;
+margin-top:40px;
+}
+
+.cta a{
+background:white;
+color:#2e7d32;
+padding:10px 20px;
+border-radius:25px;
+text-decoration:none;
+font-weight:bold;
+}
+
+footer{
+background:#1b5e20;
+color:white;
+text-align:center;
+padding:15px;
+}
+
+/* MOBILE */
+@media (max-width:768px){
+.hero{
+flex-direction:column;
+text-align:center;
+}
+
+.hero img{
+margin-top:20px;
+}
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav>
+<h2>🌾 Harvest Hub</h2>
+<div>
+<a href="login.html">Login</a>
+<a href="register.html">Register</a>
+</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+<div class="hero-text">
+<h1>Fresh Farm Products Directly From Farmers</h1>
+<p>
+Harvest Hub connects farmers and customers directly,
+ensuring fresh organic produce and better prices.
+</p>
+
+<div class="buttons">
+<a href="login.html" class="login">Login</a>
+<a href="register.html" class="register">Register</a>
+</div>
+</div>
+
+<!-- ✅ IMPORTANT FIXED IMAGE -->
+<img src="https://images.unsplash.com/photo-1464226184884-fa280b87c399">
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+<h2>Why Choose Harvest Hub?</h2>
+
+<div class="feature-grid">
+
+<div class="feature">
+<span>🌾</span>
+<h3>Direct From Farmers</h3>
+<p>Buy fresh produce without middlemen.</p>
+</div>
+
+<div class="feature">
+<span>🛒</span>
+<h3>Easy Marketplace</h3>
+<p>Browse and purchase easily.</p>
+</div>
+
+<div class="feature">
+<span>📦</span>
+<h3>Order Tracking</h3>
+<p>Track your orders anytime.</p>
+</div>
+
+<div class="feature">
+<span>🔔</span>
+<h3>Notifications</h3>
+<p>Get instant updates.</p>
+</div>
+
+</div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+<h2>Start Buying Fresh Today</h2>
+<p>Join Harvest Hub 🌾</p>
+<br>
+<a href="register.html">Get Started</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+<p>© 2026 Harvest Hub</p>
+</footer>
+
+</body>
+</html>

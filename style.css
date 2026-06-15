@@ -1,0 +1,154 @@
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+min-height:100vh;
+color:white;
+}
+
+/* NAVBAR */
+header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 60px;
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(10px);
+border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+header h2{
+color:#9cffc7;
+}
+
+header a{
+color:white;
+text-decoration:none;
+margin-left:20px;
+font-weight:500;
+}
+
+/* HERO */
+.hero{
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:80px;
+}
+
+.hero-text h1{
+font-size:60px;
+color:#9cffc7;
+}
+
+.hero-text p{
+margin:20px 0;
+font-size:20px;
+}
+
+.hero img{
+width:420px;
+filter:drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+}
+
+/* GLASS CARD */
+.card{
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(15px);
+border:1px solid rgba(255,255,255,0.1);
+border-radius:15px;
+padding:25px;
+}
+
+/* FORM */
+.form-container{
+width:380px;
+margin:120px auto;
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(20px);
+padding:40px;
+border-radius:15px;
+}
+
+input,select{
+width:100%;
+padding:12px;
+margin:12px 0;
+
+background:rgba(255,255,255,0.1);
+border:none;
+border-radius:8px;
+color:white;
+}
+
+button{
+width:100%;
+padding:12px;
+margin-top:10px;
+
+background:#00c853;
+border:none;
+border-radius:8px;
+color:white;
+font-weight:bold;
+cursor:pointer;
+}
+
+button:hover{
+background:#00e676;
+}
+
+/* DASHBOARD */
+.dashboard{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+padding:40px;
+}
+
+.stat{
+text-align:center;
+}
+
+/* PRODUCTS */
+.products{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+gap:25px;
+padding:40px;
+}
+
+.product{
+background:rgba(255,255,255,0.08);
+padding:20px;
+border-radius:15px;
+text-align:center;
+}
+
+.product img{
+width:100%;
+height:180px;
+object-fit:cover;
+border-radius:10px;
+margin-bottom:10px;
+}
+
+/* TABLE */
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th,td{
+padding:10px;
+text-align:left;
+}
+
+tr{
+border-bottom:1px solid rgba(255,255,255,0.1);
+}

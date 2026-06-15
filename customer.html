@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harvest Hub Marketplace</title>
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+/* BODY */
+body{
+background:linear-gradient(135deg,#e8f5e9,#c8e6c9);
+padding:40px;
+}
+
+/* HEADER */
+header{
+background:#2e7d32;
+color:white;
+padding:20px 30px;
+border-radius:20px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
+}
+
+header h1{
+font-size:22px;
+}
+
+.nav button{
+margin-left:10px;
+padding:8px 15px;
+border:none;
+border-radius:20px;
+cursor:pointer;
+font-weight:bold;
+}
+
+.orders{
+background:white;
+color:#2e7d32;
+}
+
+.logout{
+background:#e53935;
+color:white;
+}
+
+/* SEARCH BAR */
+.search{
+margin-bottom:25px;
+}
+
+.search input{
+width:100%;
+padding:14px;
+border:none;
+border-radius:30px;
+box-shadow:0 3px 10px rgba(0,0,0,0.1);
+font-size:15px;
+}
+
+/* PRODUCT GRID */
+.products{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+gap:25px;
+}
+
+/* PRODUCT CARD */
+.product{
+background:white;
+border-radius:18px;
+padding:15px;
+box-shadow:0 10px 25px rgba(0,0,0,0.1);
+transition:0.3s;
+position:relative;
+}
+
+.product:hover{
+transform:translateY(-8px);
+}
+
+/* PRODUCT IMAGE */
+.product img{
+width:100%;
+height:160px;
+object-fit:cover;
+border-radius:12px;
+margin-bottom:10px;
+}
+
+/* BADGE */
+.badge{
+position:absolute;
+top:10px;
+right:10px;
+background:#43a047;
+color:white;
+padding:4px 10px;
+border-radius:12px;
+font-size:12px;
+}
+
+/* PRODUCT TEXT */
+.product h3{
+color:#2e7d32;
+margin-bottom:5px;
+}
+
+.price{
+font-weight:bold;
+color:#333;
+}
+
+.stock{
+font-size:13px;
+color:#666;
+margin-bottom:8px;
+}
+
+/* BUY BUTTON */
+.buy{
+width:100%;
+padding:10px;
+border:none;
+border-radius:25px;
+background:#2e7d32;
+color:white;
+font-weight:bold;
+cursor:pointer;
+transition:0.2s;
+}
+
+.buy:hover{
+background:#1b5e20;
+}
+
+</style>
+</head>
+
+<body>
+<header>
+<h1 id="welcome">🌾 Marketplace</h1>
+<div class="nav">
+<button class="orders" onclick="goOrders()">Orders</button>
+<button class="logout" onclick="logout()">Logout</button>
+</div>
+</header>
+
+<div style="
+background:white;
+padding:15px;
+border-radius:15px;
+margin-bottom:20px;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+">
+
+<h3 style="color:#2e7d32;">📊 Today's Market Prices</h3>
+
+<p>🌾 Tomato: ₹30/kg</p>
+<p>🧅 Onion: ₹40/kg</p>
+<p>🥔 Potato: ₹35/kg</p>
+
+</div>
+
+<!-- SEARCH -->
+<div class="search">
+<input id="search" placeholder="Search products..." onkeyup="filterProducts()">
+</div>
+
+<!-- PRODUCTS -->
+<div class="products" id="products"></div>
+
+<script>
+const API="http://localhost:5000";
+function getUser(){
+const token = localStorage.getItem("token");
+if(!token) return null;
+
+const payload = JSON.parse(atob(token.split('.')[1]));
+return payload;
+}
+const user = getUser();
+if(user){
+document.getElementById("welcome").innerText =
+" Welcome, " + user.name;
+}
+let allProducts=[];
+
+function getToken(){
+return localStorage.getItem("token");
+}
+
+/* LOAD PRODUCTS */
+async function loadProducts(){
+console.log("Products:", allProducts);
+const res=await fetch(API+"/products",{
+headers:{
+Authorization:"Bearer "+getToken()
+}
+});
+allProducts=await res.json();
+displayProducts(allProducts);
+}
+
+function displayProducts(products){
+const container=document.getElementById("products");
+container.innerHTML="";
+
+if(!Array.isArray(products)){
+console.error("Products is not array:", products);
+return;
+}
+
+products.forEach(p=>{
+
+console.log("FULL PRODUCT:", p);   // ✅ ADD THIS
+console.log("IMAGE VALUE:", p.image);  // ✅ ADD THIS
+
+const imageUrl = p.image
+? `http://localhost:5000/uploads/${encodeURIComponent(p.image.trim())}`
+: "http://localhost:5000/images/app1.png";
+
+container.innerHTML+=`
+<div class="product">
+<div class="badge">Fresh</div>
+
+<img 
+src="${imageUrl}" 
+style="border:2px solid green"
+onerror="console.log('FAILED:', this.src); this.src='http://localhost:5000/images/app1.png'">
+
+<h3>${p.name}</h3>
+<p style="font-size:13px;color:#555;">
+👨‍🌾 Sold by: ${p.farmer?.name || "Farmer"}
+</p>
+<p class="price">₹ ${p.price || 0}</p>
+<p class="stock">Stock: ${p.quantity || 0} kg</p>
+
+<input type="number" id="qty-${p._id}" placeholder="KG" min="1">
+
+<button class="buy" onclick="buyProduct('${p._id}')">
+Buy Now
+</button>
+
+</div>
+`;
+});
+}
+
+/* SEARCH FILTER */
+function filterProducts(){
+const search=document.getElementById("search").value.toLowerCase();
+const filtered=allProducts.filter(p=>
+p.name.toLowerCase().includes(search)
+);
+displayProducts(filtered);
+}
+
+/* BUY PRODUCT */
+async function buyProduct(id){
+try{
+const quantity=document.getElementById("qty-"+id).value;
+
+if(!quantity || quantity<=0){
+alert("Please enter quantity in KG");
+return;
+}
+
+const res = await fetch(API+"/buy-product/"+id,{
+method:"POST",
+headers:{
+Authorization:"Bearer "+getToken(),
+"Content-Type":"application/json"
+},
+body:JSON.stringify({quantity})
+});
+
+const data = await res.json();
+
+if(!res.ok){
+alert(data.message || "Order failed ❌");
+return;
+}
+
+alert("Order placed successfully ✅");
+loadProducts();
+
+}catch(err){
+console.error(err);
+alert("Something went wrong ❌ Please try again");
+}
+}
+
+function payNow(id){
+alert("Redirecting to payment gateway... 💳");
+
+// simulate payment success
+setTimeout(()=>{
+alert("Payment Successful ✅");
+buyProduct(id);
+},1000);
+}
+
+/* NAVIGATION */
+function goOrders(){
+window.location="orders.html";
+}
+function logout(){
+localStorage.removeItem("token");
+window.location="login.html";
+}
+loadProducts();
+</script>
+
+</body>
+</html>
